@@ -2,6 +2,7 @@ package dmkcapp;
 // textField is displaying recursion remember to fix it
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -38,7 +39,7 @@ import javax.swing.SwingConstants;
 class GUI {
 	JFrame frame;
 	JTextField textField;
-	JLabel label;
+	static JLabel label;
 	JButton addBtn, subtractBtn, multiplyBtn, divideBtn, squareBtn ;
 	JButton decimalBtn, negationBtn, deleteBtn, clearBtn, equalBtn ;
 	// see if I can add decimal number into numberBtns array;
@@ -51,6 +52,7 @@ class GUI {
 	String labelnumber1, labelnumber2;
 	String Sresult;
 	boolean calculateCalled;
+	Color operatorColor;
 
 	
 	GUI() {
@@ -61,6 +63,7 @@ class GUI {
 		labelnumber2 = "";
 		updatedOperator = "";
 		calculateCalled = false;
+		operatorColor = Color.RED;
 		// Style frame
 //		BorderLayout borderLayout = new BorderLayout();
 		frame = new JFrame();
@@ -73,6 +76,9 @@ class GUI {
 	    frame.setVisible(true);
 	    frame.requestFocusInWindow();
 	    
+	
+	    
+	    
 	    NumBtnsHandler numBtnsHandler = new NumBtnsHandler();
 	    OperationBtnsHandler operationBtnsHandler = new OperationBtnsHandler();
 //        functions.presentNum = " Washa kana yar";
@@ -84,18 +90,24 @@ class GUI {
 	    textField = new JTextField();
 	    textField.setBounds(0, 43, 298, 95);
 	    textField.setText("0");
-	    textField.setFont(new Font("Calibri", Font.BOLD,40));
+	    
+	    textField.setFont(new Font("Calibri", Font.BOLD,48));
+	    
 	    textField.setHorizontalAlignment(SwingConstants.RIGHT);
+//	    textField.setColumns(10);
 	    textField.setBackground(new Color(25, 25, 25));
+//	    textField.setBackground(new Color(36, 40, 44));
 	    textField.setForeground(new Color(255,255,255));
 	    textField.setEditable(false);
 	    textField.setBorder(BorderFactory.createBevelBorder(3));
 	    
 	    // Style label
 	    label = new JLabel();
-	    label.setBounds(0,5,300,40);
+	    label.setBounds(0,3,300,40);
+	    label.setFont(new Font("Calibri",Font.PLAIN,18));
 	    label.setHorizontalAlignment(SwingConstants.RIGHT);
 	    label.setBackground(new Color(25, 25, 25));
+//	    label.setBackground(new Color(32,64, 128));
 	    label.setForeground(new Color(255,255,255));
 	    label.setBorder(BorderFactory.createBevelBorder(3));
 	    label.setOpaque(true);
@@ -209,6 +221,7 @@ class GUI {
 	    frame.setVisible(true);
 
 	   }
+	
 	public void decimalFunction() {
 		if (!presentNumber.contains(".")) {
 			presentNumber = presentNumber + ".";
@@ -243,7 +256,11 @@ class GUI {
 		pastNumber = "";
 		operator = null;
 		updateTextField();
-		}
+		label.setText("");
+		labelnumber1="";
+		labelnumber2="";
+		updatedOperator="";
+	}
 	public void squareOperation() {
 		double typedNumber = Double.parseDouble(presentNumber);
 		double square = typedNumber * typedNumber;
@@ -255,8 +272,33 @@ class GUI {
 	}
 	public void updateLabel() {
 	}
+	public void textAnimation() {
+		if (presentNumber.length()== 11 || presentNumber.length() == 12) {
+				textField.setFont(new Font("Calibri", Font.BOLD,44));
+	   
+		} else if (presentNumber.length()== 13||  presentNumber.length()== 14) {
+		      textField.setFont(new Font("Calibri", Font.BOLD,40));
+	    
+		} else if (presentNumber.length()== 15 ||  presentNumber.length()== 16) {
+		      textField.setFont(new Font("Calibri", Font.BOLD,35));
+                  }
+		else if ( presentNumber.length() >=17) {
+			textField.setFont(new Font("Calibri", Font.BOLD,32));
+		}
+	}
 	
+	public void handleRecursion() {
+		if (presentNumber.length()>16) {
+			presentNumber = presentNumber.substring(0, 17);
+			textField.setFont(new Font("Calibri", Font.BOLD,32));
+		} else {
+			textField.setFont(new Font("Calibri", Font.BOLD,48));
+		}
+	}
 	public void updateTextField() {
+		handleRecursion();
+		textAnimation();
+//		textField.setForeground(new Color(47,58,64)); this color is good after changes set it to label
 		textField.setText(presentNumber);
 	}
 	 
@@ -276,20 +318,23 @@ class GUI {
 	        if (presentNumber.isEmpty()) {
 	            operator = newOperator;
 	            updatedOperator = newOperator;
-	            label.setText("Ist"+ labelnumber1 + " "  +  updatedOperator + " ");
+	            label.setText(labelnumber1 + " "  +  updatedOperator + " ");
 	            return;
 	        }
 
 	        if (!pastNumber.isEmpty()) {
 	            calculate();
 	            operator = newOperator;
-	            updatedOperator = newOperator;
+//	            updatedOperator = newOperator;
 		        pastNumber = presentNumber;
-		        labelnumber1 = presentNumber;
-		        label.setText("2nd " + labelnumber1  + updatedOperator);
+		       
+		       
 		        presentNumber ="";
 //		        updateTextField();
 		        textField.setText(Sresult);
+		        
+		        label.setText(labelnumber1 + " "+ updatedOperator +" "+ labelnumber2 + " = ");
+		        labelnumber1 = Sresult;
 		        calculateCalled = true;
 		        return;
 	        }
@@ -298,7 +343,7 @@ class GUI {
 	        updatedOperator = newOperator;
 	        pastNumber = presentNumber;
 	        labelnumber1 = presentNumber;
-	        label.setText("3rd "+ labelnumber1 + " "  +  updatedOperator + " ");
+	        label.setText( labelnumber1 + " "  +  updatedOperator + " ");
 	        presentNumber ="";
 	        updateTextField();
 	        
@@ -312,6 +357,7 @@ class GUI {
 	        }
 		double num1 = Double.parseDouble(pastNumber);
 		double num2 = Double.parseDouble(presentNumber);
+		labelnumber1 = pastNumber;
 		labelnumber2 = presentNumber;
 		double result = 0.0;
 		
@@ -337,13 +383,13 @@ class GUI {
 		}
 		presentNumber = String.valueOf(result);
 //		pastNumber = ""; I am right about this line but finding the solution
-		
 		pastNumber = "";
 		operator = null;
+//		updatedOperator = null;
 		processOutputNumber();
 		Sresult  = presentNumber;
 		updateTextField();
-		label.setText(labelnumber1 + " "+ updatedOperator +" "+ labelnumber2 + " = ");
+//		label.setText(labelnumber1 + " "+ updatedOperator +" "+ labelnumber2 + " = ");
 		
 	}
 	
@@ -357,7 +403,9 @@ class GUI {
 			 for( int i=0; i<10; i++) {
 		            if (e.getSource() == numberBtns[i]){
 		            	if (calculateCalled) {
+		            		clearOperation();
 		            		presentNumber = String.valueOf(inputChar);
+//		            		label.setText(labelnumber1 + " "  +  updatedOperator + " ");
 //		            		textField.setText(String.valueOf(inputChar));
 		            		calculateCalled = false;
 		            	}
@@ -393,6 +441,7 @@ class GUI {
 			} else if (e.getSource() == equalBtn) {
 				calculate();
 				calculateCalled = true;
+				label.setText(labelnumber1 + " "+ updatedOperator +" "+ labelnumber2 + " = ");
 			} else if (e.getSource() == squareBtn) {
 				squareOperation();
 			} else if (e.getSource() == clearBtn) {
@@ -405,6 +454,7 @@ class GUI {
 			 else if (e.getSource() == decimalBtn) {
 				decimalFunction();
 			}
+		   
 //			updateTextField();
 //			updateLabel();
 			
