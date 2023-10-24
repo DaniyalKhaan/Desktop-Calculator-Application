@@ -53,6 +53,7 @@ class GUI {
 	String Sresult;
 	boolean calculateCalled;
 	Color operatorColor;
+	String labelString;
 
 	
 	GUI() {
@@ -64,6 +65,7 @@ class GUI {
 		updatedOperator = "";
 		calculateCalled = false;
 		operatorColor = Color.RED;
+		labelString = "";
 		// Style frame
 //		BorderLayout borderLayout = new BorderLayout();
 		frame = new JFrame();
@@ -88,7 +90,7 @@ class GUI {
 	    
 	    // Style textField
 	    textField = new JTextField();
-	    textField.setBounds(0, 43, 298, 95);
+	    textField.setBounds(0, 43, 295, 95);
 	    textField.setText("0");
 	    
 	    textField.setFont(new Font("Calibri", Font.BOLD,48));
@@ -96,18 +98,18 @@ class GUI {
 	    textField.setHorizontalAlignment(SwingConstants.RIGHT);
 //	    textField.setColumns(10);
 	    textField.setBackground(new Color(25, 25, 25));
-//	    textField.setBackground(new Color(36, 40, 44));
+	    textField.setBackground(new Color(36, 40, 56));
 	    textField.setForeground(new Color(255,255,255));
 	    textField.setEditable(false);
 	    textField.setBorder(BorderFactory.createBevelBorder(3));
 	    
 	    // Style label
-	    label = new JLabel();
+	    label = new JLabel("<html>" + labelString + "</html>");
 	    label.setBounds(0,3,300,40);
 	    label.setFont(new Font("Calibri",Font.PLAIN,18));
 	    label.setHorizontalAlignment(SwingConstants.RIGHT);
 	    label.setBackground(new Color(25, 25, 25));
-//	    label.setBackground(new Color(32,64, 128));
+	    label.setBackground(new Color(32,64, 128));
 	    label.setForeground(new Color(255,255,255));
 	    label.setBorder(BorderFactory.createBevelBorder(3));
 	    label.setOpaque(true);
@@ -270,8 +272,12 @@ class GUI {
 		updateTextField();
 		
 	}
+	
 	public void updateLabel() {
+		label.setText("<html>" + labelString + "</html>");
 	}
+	
+	
 	public void textAnimation() {
 		if (presentNumber.length()== 11 || presentNumber.length() == 12) {
 				textField.setFont(new Font("Calibri", Font.BOLD,44));
@@ -314,11 +320,14 @@ class GUI {
 	    }
 	
 	 public void selectOperator(String newOperator) {
+		 calculateCalled=false;
 	        // if no number is entered yet
 	        if (presentNumber.isEmpty()) {
 	            operator = newOperator;
 	            updatedOperator = newOperator;
-	            label.setText(labelnumber1 + " "  +  updatedOperator + " ");
+//	            label.setText(labelnumber1 + " "  +  updatedOperator + " ");
+	            labelString = labelnumber1 + " "  + " <font size='+2' color='rgb(255, 234, 0)'><b>" + updatedOperator + "</b></font> " + " ";
+	            updateLabel();
 	            return;
 	        }
 
@@ -333,7 +342,9 @@ class GUI {
 //		        updateTextField();
 		        textField.setText(Sresult);
 		        
-		        label.setText(labelnumber1 + " "+ updatedOperator +" "+ labelnumber2 + " = ");
+//		        label.setText(labelnumber1 + " "+ updatedOperator +" "+ labelnumber2 + " = ");
+		        labelString = labelnumber1 + " <font size='+2' color='rgb(255, 234, 0)'<b>" + updatedOperator + "</b></font> " + labelnumber2 + " = ";
+		        updateLabel();
 		        labelnumber1 = Sresult;
 		        calculateCalled = true;
 		        return;
@@ -343,7 +354,9 @@ class GUI {
 	        updatedOperator = newOperator;
 	        pastNumber = presentNumber;
 	        labelnumber1 = presentNumber;
-	        label.setText( labelnumber1 + " "  +  updatedOperator + " ");
+//	        label.setText( labelnumber1 + " "  +  updatedOperator + " ");
+	        labelString =  labelnumber1 + " "  +  " <font size='+2' color='rgb(255, 234, 0)'<b>" + updatedOperator + "</b></font> "+ " ";
+	        updateLabel();
 	        presentNumber ="";
 	        updateTextField();
 	        
