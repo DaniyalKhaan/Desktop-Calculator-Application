@@ -1,12 +1,13 @@
-package dmkcapp;
+package dMKCalculator;
 // textField is displaying recursion remember to fix it
 
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -52,8 +53,11 @@ class GUI {
 	String labelnumber1, labelnumber2;
 	String Sresult;
 	boolean calculateCalled;
+	boolean operatorCalled;
 	Color operatorColor;
 	String labelString;
+	ImageIcon titleIcon;
+	ImageIcon deleteIcon;
 
 	
 	GUI() {
@@ -64,12 +68,13 @@ class GUI {
 		labelnumber2 = "";
 		updatedOperator = "";
 		calculateCalled = false;
+		operatorCalled = false;
 		operatorColor = Color.RED;
 		labelString = "";
 		// Style frame
 //		BorderLayout borderLayout = new BorderLayout();
 		frame = new JFrame();
-		frame.setTitle("DMK Calculator");
+		frame.setTitle("DMKgg Calculator");
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    frame.setSize(316, 530);
 	    frame.setLayout(null);;
@@ -77,6 +82,12 @@ class GUI {
 	    frame.setLocationRelativeTo(null);
 	    frame.setVisible(true);
 	    frame.requestFocusInWindow();
+	    
+	    titleIcon = new ImageIcon(getClass().getResource("ICON.png"));
+	    deleteIcon = new ImageIcon(getClass().getResource("delete.png"));
+
+
+	    frame.setIconImage(titleIcon.getImage());
 	    
 	
 	    
@@ -98,9 +109,10 @@ class GUI {
 	    textField.setHorizontalAlignment(SwingConstants.RIGHT);
 //	    textField.setColumns(10);
 	    textField.setBackground(new Color(25, 25, 25));
-	    textField.setBackground(new Color(36, 40, 56));
+//	    textField.setBackground(new Color(36, 40, 44));
 	    textField.setForeground(new Color(255,255,255));
 	    textField.setEditable(false);
+	    textField.requestFocusInWindow();
 	    textField.setBorder(BorderFactory.createBevelBorder(3));
 	    
 	    // Style label
@@ -109,7 +121,7 @@ class GUI {
 	    label.setFont(new Font("Calibri",Font.PLAIN,18));
 	    label.setHorizontalAlignment(SwingConstants.RIGHT);
 	    label.setBackground(new Color(25, 25, 25));
-	    label.setBackground(new Color(32,64, 128));
+//	    label.setBackground(new Color(32,64, 128));
 	    label.setForeground(new Color(255,255,255));
 	    label.setBorder(BorderFactory.createBevelBorder(3));
 	    label.setOpaque(true);
@@ -119,11 +131,11 @@ class GUI {
 	    subtractBtn = new JButton("–");
 	    multiplyBtn = new JButton("×");
 	    divideBtn = new JButton("÷");
-	    squareBtn = new JButton("<html>x<sup>2</sup></html>");
+	    squareBtn = new JButton("<html>X<sup>2</sup></html>");
 	    negationBtn = new JButton("±");
 	    decimalBtn = new JButton("•");
 	    deleteBtn = new JButton("");
-	    clearBtn = new JButton("C");
+	    clearBtn = new JButton();
 	    equalBtn = new JButton("=");
 	    
 	    // declaring and styling number Buttons
@@ -131,7 +143,9 @@ class GUI {
 	    for (int i =0; i<10; i++) {
 	    	
 	    	numberBtns[i] = new JButton(String.valueOf(i));
-	    	numberBtns[i].setFont(new Font("Harlow Solid Italic", Font.ITALIC, 25));
+	    	numberBtns[i].setFont(new Font("Lucida Sans", Font.BOLD, 25));
+//	    	numberBtns[i].setFont(new Font("Microsoft Sans Serif", Font.BOLD, 25));
+	    	
 	    	numberBtns[i].setFocusable(false);
 	    	numberBtns[i].setBackground(new Color(60,60, 60));
 	    	numberBtns[i].setForeground(new Color(255,255,255));
@@ -171,11 +185,11 @@ class GUI {
 	    equalBtn.setBackground(new Color(245,164, 11));
 	    
 	    // made changes to some buttons for icon look 
-	    deleteBtn.setFont(new Font("Wingdings", Font.BOLD,20));
+	    deleteBtn.setFont(new Font("Wingdings", Font.BOLD,22));
 	    deleteBtn.setForeground(new Color(245,164, 11));
 	    decimalBtn.setFont(new Font("Georgia", Font.BOLD,18));
 	    clearBtn.setFont(new Font("Arial", Font.PLAIN, 20));
-	    squareBtn.setFont(new Font("Forte", Font.PLAIN, 19));
+	    squareBtn.setFont(new Font("Arial", Font.BOLD, 17));
 //	    addBtn.setIcon(icon);
 	    
 //	    addBtn.addActionListener(operationBtnsHandler);)
@@ -215,11 +229,17 @@ class GUI {
 	    panel.add(operationBtns[6]);
 	    panel.add(operationBtns[9]);
 	    
+	    clearBtn.setIcon(deleteIcon);
+	    
 	    
 //	    textField.setText(functions.presentNum);
+	    frame.addKeyListener(numBtnsHandler);
+	    frame.addKeyListener(operationBtnsHandler);
+	    
 	    frame.add(textField);
 	    frame.add(label);
 	    frame.add(panel);
+//	    frame.addKeyListener(NumBtnsHandler);
 	    frame.setVisible(true);
 
 	   }
@@ -262,6 +282,9 @@ class GUI {
 		labelnumber1="";
 		labelnumber2="";
 		updatedOperator="";
+		Sresult = "";
+		calculateCalled = false;
+		operatorCalled = false;
 	}
 	public void squareOperation() {
 		double typedNumber = Double.parseDouble(presentNumber);
@@ -320,7 +343,7 @@ class GUI {
 	    }
 	
 	 public void selectOperator(String newOperator) {
-		 calculateCalled=false;
+//		 calculateCalled=false;
 	        // if no number is entered yet
 	        if (presentNumber.isEmpty()) {
 	            operator = newOperator;
@@ -334,7 +357,7 @@ class GUI {
 	        if (!pastNumber.isEmpty()) {
 	            calculate();
 	            operator = newOperator;
-//	            updatedOperator = newOperator;
+	            
 		        pastNumber = presentNumber;
 		       
 		       
@@ -344,9 +367,10 @@ class GUI {
 		        
 //		        label.setText(labelnumber1 + " "+ updatedOperator +" "+ labelnumber2 + " = ");
 		        labelString = labelnumber1 + " <font size='+2' color='rgb(255, 234, 0)'<b>" + updatedOperator + "</b></font> " + labelnumber2 + " = ";
+		        updatedOperator = newOperator;
 		        updateLabel();
 		        labelnumber1 = Sresult;
-		        calculateCalled = true;
+		        operatorCalled = true;
 		        return;
 	        }
 	        operator = newOperator;
@@ -385,9 +409,12 @@ class GUI {
 			result = num1 * num2;
 			break;
 		case "÷":
-			if (num2 != 0) {
+			if (num2 == 0) {
+				
+				textField.setText("cannot / by 0");
+//				return;
+			} else {
 				result = num1 / num2;
-			} else if (num2 ==20){
 //				presentNumber = " Cannot divide by zero";
 			}
 			break;
@@ -395,19 +422,17 @@ class GUI {
 
 		}
 		presentNumber = String.valueOf(result);
-//		pastNumber = ""; I am right about this line but finding the solution
 		pastNumber = "";
 		operator = null;
 //		updatedOperator = null;
 		processOutputNumber();
 		Sresult  = presentNumber;
 		updateTextField();
-//		label.setText(labelnumber1 + " "+ updatedOperator +" "+ labelnumber2 + " = ");
-		
+		labelString = labelnumber1 + " <font size='+2' color='rgb(255, 234, 0)'<b>" + updatedOperator + "</b></font> " + labelnumber2 + " = ";
 	}
 	
 	  
-	class NumBtnsHandler implements ActionListener{
+	class NumBtnsHandler implements ActionListener, KeyListener{
 		
 		
 		public void actionPerformed(ActionEvent e) {
@@ -415,11 +440,14 @@ class GUI {
 			
 			 for( int i=0; i<10; i++) {
 		            if (e.getSource() == numberBtns[i]){
-		            	if (calculateCalled) {
+		            	if (operatorCalled) {
+		            		labelString = Sresult + "dayo"  + " <font size='+2' color='rgb(255, 234, 0)'><b>" + updatedOperator + "</b></font> " + " ";
+		            		updateLabel();
+		            		presentNumber = String.valueOf(inputChar);
+		            		operatorCalled = false;
+		            	} else if ( calculateCalled) {
 		            		clearOperation();
 		            		presentNumber = String.valueOf(inputChar);
-//		            		label.setText(labelnumber1 + " "  +  updatedOperator + " ");
-//		            		textField.setText(String.valueOf(inputChar));
 		            		calculateCalled = false;
 		            	}
 
@@ -433,9 +461,46 @@ class GUI {
 		            
 		            }
 			 }
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// TODO Auto-generated method stub
+			if (Character.isDigit(e.getKeyChar()) ) {
+				char keypress = e.getKeyChar();
+			    
+				if (operatorCalled) {
+            		labelString = Sresult + " "  + " <font size='+2' color='rgb(255, 234, 0)'><b>" + updatedOperator + "</b></font> " + " ";
+            		updateLabel();
+            		presentNumber = String.valueOf(keypress);
+            		operatorCalled = false;
+            	} else if ( calculateCalled) {
+            		clearOperation();
+            		presentNumber = String.valueOf(keypress);
+            		calculateCalled = false;
+            	}
+
+            	else if (textField.getText().equals("0")) {
+                    presentNumber = String.valueOf(keypress);
+                } else {
+                	presentNumber = textField.getText() + keypress;
+                  }
+            	updateTextField();
+		    } 		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
 		}
 	
-	class OperationBtnsHandler implements ActionListener{
+	class OperationBtnsHandler implements ActionListener, KeyListener{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -444,17 +509,14 @@ class GUI {
 				
 			} else if (e.getSource() == subtractBtn) {
 				selectOperator(subtractBtn.getText());
-//				label.setText(temp + operator);
 			} else if (e.getSource() == multiplyBtn) {
 				selectOperator(multiplyBtn.getText());
-//				label.setText(temp + operator);
 			} else if (e.getSource() == divideBtn) {
 				selectOperator(divideBtn.getText());
-//				label.setText(temp + operator);
 			} else if (e.getSource() == equalBtn) {
 				calculate();
 				calculateCalled = true;
-				label.setText(labelnumber1 + " "+ updatedOperator +" "+ labelnumber2 + " = ");
+				updateLabel();
 			} else if (e.getSource() == squareBtn) {
 				squareOperation();
 			} else if (e.getSource() == clearBtn) {
@@ -472,8 +534,55 @@ class GUI {
 //			updateLabel();
 			
 			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// TODO Auto-generated method stub
+			if (e.getKeyChar() == '+') {
+				selectOperator(addBtn.getText());
+				
+			} else if (e.getKeyChar() == '-') {
+				selectOperator(subtractBtn.getText());
+			} else if (e.getKeyChar() == '*') {
+				selectOperator(multiplyBtn.getText());
+			} else if (e.getKeyChar() == '/') {
+				selectOperator(divideBtn.getText());
+			} else if (e.getKeyChar() == '=' || e.getKeyChar() == KeyEvent.VK_ENTER ) {
+				calculate();
+				calculateCalled = true;
+				updateLabel();
+			} else if (e.getKeyChar() == KeyEvent.VK_SHIFT) {
+				squareOperation();
+			} else if (e.getKeyChar() == KeyEvent.VK_DELETE || e.getKeyChar() =='C') {
+				clearOperation();
+			} else if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
+				deleteOperation();
+			} else if (e.getKeyChar() == 'n' || e.getKeyChar() == 'N')  {
+				negationOperation();
+			}
+			 else if (e.getKeyChar() == '.') {
+				decimalFunction();
+			}
+		   
+//			updateTextField();
+//			updateLabel();
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
 		} 		
 	}
+	
+
 	
 
 	
